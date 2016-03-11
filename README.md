@@ -32,20 +32,22 @@ __tintri_snap.py        list, create and delete Snapshots on the Tintri-Storage 
 __tintri_flr.py         mount a Tintri Storage Snapshot at a local linux system__
 
 ================================================================================
-##      local_settings.py Defining the credentials for different Storage Systems 
-##                        and users
+##      local_settings.py 
+### Defining the credentials for different Storage-Systems and Users
 ================================================================================
 You must define the user credentials for your Tintri-Systems in a Python-file.
-There are two possible places for teh configuration.
+There are two possible places for the configuration file.
 
 1. Global definition
-    Define the __TINTRI_CONFIG__ dictionary in python library area.
-    i.e. /usr/local/lib/python2.7/dist-packages/schtob/tintri_http_api/local_settings.py
+    Define the __TINTRI_CONFIG__ dictionary in the python library area.
+    i.e. 
+    _/usr/local/lib/python2.7/dist-packages/schtob/tintri_http_api/local_settings.py_
 2. User specific definition
     Define the __TINTRI_CONFIG__ dictionary in you HOME directory.
-    i.e. /home/uws/.tintri/local_settings.py
+    i.e. 
+    _/home/uws/.tintri/local_settings.py_
 
-If both files are existent the the local one will override the global one.
+If both files are existent the local one will override the global one.
 
 And here is the needed dictionary:
         
@@ -82,15 +84,16 @@ And here is the needed dictionary:
 ================================================================================
 #      tintri_snap.py
 ================================================================================
-The tintri_snap.py opens an easy CLI possibility to handle with Tintri-Snapshots.
+The _*tintri_snap.py*_ opens an easy CLI possibility to handle Tintri-Snapshots.
+
 Here are the actual possible options
 
 1. List the actual Snapshots of a virtual machine
-2. Create a new Snapshot a virtual machine
+2. Create a new Snapshot for a virtual machine
 3. Delete __all__ or the given Snapshot-Names for a virtual machine
 
-The functionality is more or less an example of the API, but it could be usefull too.
-But be carefull the __delete__ function will delete without any further inquery and
+The functionality is more or less an example of the API usage, but it could be usefull too.
+But be carefull the __delete__ function will delete without any further inquery and it
 will delete all _matching_ snapshots.
 
 Here is the complete _Usage_:
@@ -100,37 +103,36 @@ Here is the complete _Usage_:
 ================================================================================
     USAGE: tintri_snap.py [-v]* (-f | --filer) [--vm <vm-name>] [--description <snap-name>] --list
        tintri_snap.py [-v]* (-f | --filer) [--vm <vm-name>] --create [<snap-name>]
-       tintri_snap.py [-v]* (-f | --filer) [--vm <vm-name>] --delete (--all | <snap-name> [<snap-name]*)
+       tintri_snap.py [-v]\* (-f | --filer) [--vm <vm-name>] --delete (--all | <snap-name> [<snap-name]\*)
 
-  the meaning of the options:
+    the meaning of the options:
 
-  -v               add verbosity
-  --all            delete ALL snapshots (see --delete)
-  -q | --quiet     be quiet (only Error output)
-  -f | --filer     Tintri-Filername          
-  --vm | --vmname  hypervisor virtual machine name 
-  --list           List the Snapshots of the selected machine
-  --create         Create a new Snapshot for the selected machine.
-                   if now snap-name is given the script will be asked for one
-  --delete         Delete the the given snap_names or ALL snapshots if
-                   the option --all is given
-  --version        print programm version and exit
-  --logging <lvl>  Activate Logging of the API commands to the terminal.
-                   possible Levels are:
-                       DEBUG, INFO, WARNING, ERROR, CRITICAL
-                   the programm and the http_api are using the python "logging"
-                   module.
+    -v               add verbosity
+    --all            delete ALL snapshots (see --delete)
+    -q | --quiet     be quiet (only Error output)
+    -f | --filer     Tintri-Filername          
+    --vm | --vmname  hypervisor virtual machine name 
+    --list           List the Snapshots of the selected machine
+    --create         Create a new Snapshot for the selected machine.
+                     if now snap-name is given the script will be asked for one
+    --delete         Delete the the given snap_names or ALL snapshots if
+                     the option --all is given
+    --version        print programm version and exit
+    --logging <lvl>  Activate Logging of the API commands to the terminal.
+                     possible Levels are:
+                         DEBUG, INFO, WARNING, ERROR, CRITICAL
+                     the programm and the http_api are using the python "logging"
+                     module.
 
 ================================================================================
 #       tintri_flr.py
 ================================================================================
-This python script __tintri_flr.py__ intends to mount the prepared
-"restore-snapshot" from a
+This python script __tintri_flr.py__ intends to mount a snapshot from a
 Tintri-Storage on the actual LINUX-System.
 
 After you recovered a Tintri-Snapshot you need to mount the newly generated
 SCSI-Devices on your LINUX System. You can do this by using several LINUX
-commands or by __tintri_flr.py__ Python script.
+commands or by the __tintri_flr.py__ Python script.
 
 The only thing you have to do for mounting the snapshot is:
 * call the __tintri_flr.py__ without any option!
@@ -139,10 +141,10 @@ __You must be "root" or use "sudo" to get the script working!__
 
 ### Without any option the script does the following:
 1. check if the local virtual machine name is equal to a vmware machine name. If 
-   this is not the case it lists all virtual machines and asks which one should be 
+   this is not the case, list all virtual machines and asks which one should be 
    used.
-2. it lists all available snapshots of the selected virtual machine
-3. it maps the snapshot disks of the selected snapshot at the virtual machine
+2. lists all available snapshots of the selected virtual machine. Let the user select one of them.
+3. maps the snapshot disks of the selected snapshot at the virtual machine
 4. determine the actual filesystem infomation.
 5. search for new Snapshot-Disks in the SCSI environment.
 6. generate new Mount-Points for the snapshot disks (if not allready existent).
