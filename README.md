@@ -32,6 +32,14 @@ __tintri_snap.py        list, create and delete Snapshots on the Tintri-Storage 
 __tintri_flr.py         mount a Tintri Storage Snapshot at a local linux system__
 
 ================================================================================
+#      Installation
+================================================================================
+The API is a classic Python Library. For installation pull the Git-rpository,
+step into the *http_api* directory and call:
+
+        sudo python setup.py install
+
+================================================================================
 ##      local_settings.py 
 ### Defining the credentials for different Storage-Systems and Users
 ================================================================================
@@ -80,7 +88,6 @@ And here is the needed dictionary:
             },
         }
     }
-
 ================================================================================
 #      tintri_snap.py
 ================================================================================
@@ -123,6 +130,79 @@ Here is the complete _Usage_:
                          DEBUG, INFO, WARNING, ERROR, CRITICAL
                      the programm and the http_api are using the python "logging"
                      module.
+
+================================================================================
+###     Examples
+================================================================================
+    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --create API-Test-02
+
+    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --list
+    Nr.      vmName        createTime creatorName            description Changed MB    type
+      1 T-ubuntu-99 03/11/16 14:57:04       admin               oracle12    2809.66 scheduled
+      2 T-ubuntu-99 03/11/16 14:59:23       admin               oracle12        0.0 scheduled
+      3 T-ubuntu-99 03/11/16 15:00:02      tintri       hourly scheduled        0.0 scheduled
+      4 T-ubuntu-99 03/11/16 15:21:23         uws               API-Test       2.89 scheduled
+      5 T-ubuntu-99 03/11/16 15:26:23       admin            oracle12-01       0.35 scheduled
+      6 T-ubuntu-99 03/11/16 16:00:03      tintri       hourly scheduled       0.59 scheduled
+      7 T-ubuntu-99 03/11/16 16:06:32       admin           GUI-Snapshot       0.54  manual
+          8 T-ubuntu-99 03/11/16 17:00:03      tintri       hourly scheduled       1.39 scheduled
+          9 T-ubuntu-99 03/11/16 17:42:23         uws            API-Test-02       0.87 scheduled
+        
+    ================================================================================
+    ####            Logging Example: Deleting All Snapshot that match on *API-TEST*
+    ================================================================================
+    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --logging DEBUG --delete  API-Test
+
+    2016-03-11 17:35:41,818 - DEBUG - TFilers:__new__: name: 'tintri-adm' 
+    2016-03-11 17:35:41,819 - DEBUG - TFilers:get_connection: name: 'tintri-adm' 
+    2016-03-11 17:35:41,819 - DEBUG - TFilers:create_connection: name: 'tintri-adm' role 'default' 
+    2016-03-11 17:35:41,819 - DEBUG - login: 
+    2016-03-11 17:35:41,819 - DEBUG - call_http_api_post:
+        url     : https://tintri-adm/api/v310/session/login
+        data    : {'username': 'uws', 'typeId': 'com.tintri.api.rest.vcommon.dto.rbac.RestApiCredentials', 'password': 'Admin_123'}
+        headers : {'content-type': 'application/json'}
+        verify  : False
+            
+    2016-03-11 17:35:41,860 - DEBUG - call_http_api: r.cookies: <<class 'requests.cookies.RequestsCookieJar'>[<Cookie JSESSIONID=6AA4811BBA4292066BCF5C8F0010D6B7 for tintri-adm.local/>]>
+    2016-03-11 17:35:41,861 - DEBUG - del_VMsnapshots: vmName: 'T-ubuntu-99' snap_name: '['API-Test']'
+    2016-03-11 17:35:41,862 - DEBUG - get_VMuuid: vmName: 'T-ubuntu-99'
+    2016-03-11 17:35:41,862 - DEBUG - get_VMinfo: vmName: 'None' force: False
+    2016-03-11 17:35:41,863 - DEBUG - call_http_api_get:
+        url     : https://tintri-adm/api/v310/vm?offset=0&limit=2000
+        params  : None
+        headers : {'cookie': 'JSESSIONID=6AA4811BBA4292066BCF5C8F0010D6B7', 'content-type': 'application/json'}
+        verify  : False
+                
+    2016-03-11 17:35:41,936 - DEBUG - get_VMsnapshots: vmName: 'T-ubuntu-99'
+    2016-03-11 17:35:41,936 - DEBUG - call_http_api_get:
+        url     : https://tintri-adm/api/v310/snapshot?offset=0&limit=2000
+        params  : {'queryType': 'TOP_DOCS_BY_TIME', 'contain': ['API-Test']}
+        headers : {'cookie': 'JSESSIONID=6AA4811BBA4292066BCF5C8F0010D6B7', 'content-type': 'application/json'}
+        verify  : False
+                
+    2016-03-11 17:35:41,960 - DEBUG - call_http_api_del:
+        url     : https://tintri-adm/api/v310/snapshot/DCC9C84E-1062-CA6E-104D-E00EB460FC49-SST-0000000000000749
+        data    : None
+        headers : {'cookie': 'JSESSIONID=6AA4811BBA4292066BCF5C8F0010D6B7', 'content-type': 'application/json'}
+        verify  : False
+    2016-03-11 17:35:42,568 - INFO - [u'Successfully deleted snapshot (ID=DCC9C84E-1062-CA6E-104D-E00EB460FC49-SST-0000000000000749) of VM T-ubuntu-99.']
+    2016-03-11 17:35:42,569 - DEBUG - call_http_api_del:
+        url     : https://tintri-adm/api/v310/snapshot/DCC9C84E-1062-CA6E-104D-E00EB460FC49-SST-0000000000000732
+        data    : None
+        headers : {'cookie': 'JSESSIONID=6AA4811BBA4292066BCF5C8F0010D6B7', 'content-type': 'application/json'}
+        verify  : False
+    2016-03-11 17:35:43,179 - INFO - [u'Successfully deleted snapshot (ID=DCC9C84E-1062-CA6E-104D-E00EB460FC49-SST-0000000000000732) of VM T-ubuntu-99.']
+
+
+    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --list
+    Nr.      vmName        createTime creatorName            description Changed MB    type
+      1 T-ubuntu-99 03/11/16 14:57:04       admin               oracle12    2809.66 scheduled
+      2 T-ubuntu-99 03/11/16 14:59:23       admin               oracle12        0.0 scheduled
+      3 T-ubuntu-99 03/11/16 15:00:02      tintri       hourly scheduled        0.0 scheduled
+      4 T-ubuntu-99 03/11/16 15:26:23       admin            oracle12-01       2.93 scheduled
+      5 T-ubuntu-99 03/11/16 16:00:03      tintri       hourly scheduled       0.59 scheduled
+      6 T-ubuntu-99 03/11/16 16:06:32       admin           GUI-Snapshot       0.54  manual
+      7 T-ubuntu-99 03/11/16 17:00:03      tintri       hourly scheduled       1.39 scheduled
 
 ================================================================================
 #       tintri_flr.py
@@ -195,6 +275,51 @@ in the setting of the variable __DBG_PATH__.
 The mount-points are generated in a directory named **/tintri_recover**.
 This can also be changed by editing the vraiable __TINTRI_RECOVER_DIR__ in the top area of the script.
 
+================================================================================
+##              Examples:
+================================================================================
+    $ sudo tintri_flr.py
+    Please enter the Tintri Storage-System-Name or address: admin
+    no response from admin
+    Could not reach Storage-System : 'admin'
+        
+    Please enter the Tintri Storage-System-Name or address: tintri-adm
+
+    Please select the virtual machine for the local host 
+      1 : EMC Backup and Recovery
+      2 : Oracle_Ceramtec
+      3 : Oracle_Ceramtec-clone
+      4 : T-ubuntu-01
+      5 : T-ubuntu-01-clone
+      6 : T-ubuntu-99
+      7 : ceramtec-a1
+      8 : ceramtec-b1
+      9 : edqtrn
+     10 : nsrve
+
+    Please type the Nr. of the virtual machine name for the local host
+    [1-10] : 6
+    Nr.      vmName        createTime creatorName            description Changed MB    type
+      1 T-ubuntu-99 03/11/16 14:57:04       admin               oracle12    2809.66 scheduled
+      2 T-ubuntu-99 03/11/16 14:59:23       admin               oracle12        0.0 scheduled
+      3 T-ubuntu-99 03/11/16 15:00:02      tintri       hourly scheduled        0.0 scheduled
+      4 T-ubuntu-99 03/11/16 15:26:23       admin            oracle12-01       2.93 scheduled
+      5 T-ubuntu-99 03/11/16 16:00:03      tintri       hourly scheduled       0.59 scheduled
+      6 T-ubuntu-99 03/11/16 16:06:32       admin           GUI-Snapshot       0.54  manual
+      7 T-ubuntu-99 03/11/16 17:00:03      tintri       hourly scheduled       1.39 scheduled
+
+    Please enter the number of the Snapshot you want to recover from : 1
+    ... snapshot disks will be mapped to VM; Please be patient
+    /bin/mount /dev/sdd2 /tintri_recover/tmp
+    /bin/mount /dev/sdd3 /tintri_recover/SLASH
+    /bin/mount /dev/sdc1 /tintri_recover/home
+
+
+    $ sudo tintri_flr.py --reset
+    ... /bin/umount -l /tintri_recover/tmp
+    ... /bin/umount -l /tintri_recover/home
+    ... /bin/umount -l /tintri_recover/SLASH
+    ... Remove mapped snapshot disks from virtual machine
 
 ================================================================================
 #       the actual existing API functions
