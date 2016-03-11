@@ -578,9 +578,9 @@ if __name__ == '__main__':
     # Start of the Main-Prog
     #
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'qvf:',
-            ['quiet', 'filer=', 'vmname=', 'reset', 'reset_all','version',
-             'logging=', ])
+        opts, args = getopt.getopt(sys.argv[1:], 'qvf:?',
+            ['help', 'quiet', 'filer=', 'vmname=', 'reset', 'reset_all',
+             'version', 'logging=', ])
     except:
         usage()
 
@@ -608,6 +608,8 @@ if __name__ == '__main__':
         elif o == '--version':
             print "%s : %s" % (basename(sys.argv[0]), Version)
             sys.exit(0)
+        else:
+            usage()
 
     if mRESET:
         reset(log_lvl)

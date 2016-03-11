@@ -70,7 +70,7 @@ def init_connection(filername, log_lvl):
         sys.exit(1)
     return tfilers
 
-def usage(err_msg=None):
+def usage(err_msg=""):
     print """
 %(err_msg)s
 
@@ -107,8 +107,8 @@ if __name__ == '__main__':
     # Start of the Main-Prog
     #
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'qvf:',
-            ['all', 'quiet', 'filer=', 'vm=', 'vmname=',
+        opts, args = getopt.getopt(sys.argv[1:], 'qvf:?',
+            ['help', 'all', 'quiet', 'filer=', 'vm=', 'vmname=',
              'list', 'create', 'delete', 'logging=', ])
     except:
         usage("SYNTAX Error")
@@ -143,6 +143,8 @@ if __name__ == '__main__':
         elif o == '--version':
             print "%s : %s" % (basename(sys.argv[0]), Version)
             sys.exit(0)
+        else:
+            usage()
 
     # check if we have the needed parameter
     if not filer or not vm_name:
