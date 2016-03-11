@@ -145,12 +145,12 @@ Here is the complete _Usage_:
       5 T-ubuntu-99 03/11/16 15:26:23       admin            oracle12-01       0.35 scheduled
       6 T-ubuntu-99 03/11/16 16:00:03      tintri       hourly scheduled       0.59 scheduled
       7 T-ubuntu-99 03/11/16 16:06:32       admin           GUI-Snapshot       0.54  manual
-          8 T-ubuntu-99 03/11/16 17:00:03      tintri       hourly scheduled       1.39 scheduled
-          9 T-ubuntu-99 03/11/16 17:42:23         uws            API-Test-02       0.87 scheduled
+      8 T-ubuntu-99 03/11/16 17:00:03      tintri       hourly scheduled       1.39 scheduled
+      9 T-ubuntu-99 03/11/16 17:42:23         uws            API-Test-02       0.87 scheduled
         
-    ================================================================================
-    ####            Logging Example: Deleting All Snapshot that match on *API-TEST*
-    ================================================================================
+================================================================================
+####            Logging Example: Deleting All Snapshot that match on *API-TEST*
+================================================================================
     $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --logging DEBUG --delete  API-Test
 
     2016-03-11 17:35:41,818 - DEBUG - TFilers:__new__: name: 'tintri-adm' 
@@ -193,6 +193,7 @@ Here is the complete _Usage_:
         verify  : False
     2016-03-11 17:35:43,179 - INFO - [u'Successfully deleted snapshot (ID=DCC9C84E-1062-CA6E-104D-E00EB460FC49-SST-0000000000000732) of VM T-ubuntu-99.']
 
+#
 
     $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --list
     Nr.      vmName        createTime creatorName            description Changed MB    type
@@ -313,7 +314,7 @@ This can also be changed by editing the vraiable __TINTRI_RECOVER_DIR__ in the t
     /bin/mount /dev/sdd2 /tintri_recover/tmp
     /bin/mount /dev/sdd3 /tintri_recover/SLASH
     /bin/mount /dev/sdc1 /tintri_recover/home
-
+#
 
     $ sudo tintri_flr.py --reset
     ... /bin/umount -l /tintri_recover/tmp
