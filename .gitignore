@@ -1,7 +1,12 @@
+# VI Files
+*.sw[op]
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+x.py
+local_settings.py
 
 # C extensions
 *.so
