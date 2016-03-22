@@ -3,12 +3,13 @@ Easy to use API for the Tintri-Storage-System. Including some CLI tools
 
 ================================================================================
                 README: for the Python HTTP-API for Tintri Storage Systems
-                Version: 0.0.1
+                Version: 0.0.2
                 Copyright (c) 2016  -  The MIT License (MIT)
                       Uwe W. Schäfer 
                       Schäfer & Tobies Software u. Consulting GmbH
                       www.schaefer-tobies.de
-                uws: 2016.03.11
+                uws: 2016.03.11         first version
+                uws: 2016.03.22         add some checks and "--force" for tintri_snap.py 
 ================================================================================
 
 This repository is a wrapper implementation of the Tintri-REST-API in a object 
@@ -16,7 +17,7 @@ oriented Python Class.
 The Library includes a python setup.py script which will install the library
 into the local python dist-packages.
 But you can test and work with the library without installation too.
-The only other thin you have to do for initialisation is a definition of
+The only other thing you have to do for initialization is a definition of
 your user credentials in a local_settings.py file (see local_settings later on in this
 README)
 After that just set the Python-Path and use the lib functions like this:
@@ -110,7 +111,7 @@ Here is the complete _Usage_:
 ================================================================================
     USAGE: tintri_snap.py [-v]* (-f | --filer) [--vm <vm-name>] [--description <snap-name>] --list
        tintri_snap.py [-v]* (-f | --filer) [--vm <vm-name>] --create [<snap-name>]
-       tintri_snap.py [-v]\* (-f | --filer) [--vm <vm-name>] --delete (--all | <snap-name> [<snap-name]\*)
+       tintri_snap.py [-v]\* (-f | --filer) [--vm <vm-name>] --delete [--force] (--all | <snap-name> [<snap-name]\*)
 
     the meaning of the options:
 
@@ -124,6 +125,7 @@ Here is the complete _Usage_:
                      if now snap-name is given the script will be asked for one
     --delete         Delete the the given snap_names or ALL snapshots if
                      the option --all is given
+    --force          Force Deletion of Snapshots (no interaction with user)
     --version        print programm version and exit
     --logging <lvl>  Activate Logging of the API commands to the terminal.
                      possible Levels are:
@@ -151,7 +153,7 @@ Here is the complete _Usage_:
 ================================================================================
 ####            Logging Example: Deleting All Snapshot that match on *API-TEST*
 ================================================================================
-    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --logging DEBUG --delete  API-Test
+    $ tintri_snap.py -f tintri-adm --vm T-ubuntu-99 --logging DEBUG --delete  --force API-Test
 
     2016-03-11 17:35:41,818 - DEBUG - TFilers:__new__: name: 'tintri-adm' 
     2016-03-11 17:35:41,819 - DEBUG - TFilers:get_connection: name: 'tintri-adm' 

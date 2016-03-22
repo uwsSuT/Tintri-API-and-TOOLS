@@ -14,7 +14,8 @@
     :license: LGPL, see LICENSE for details.
 """
 #
-# uws: 11.03.2016
+# uws: 2016.03.11 First Version
+# uws: 2016.03.22 added some checks and "--force" for deletion
 #
 import sys, os
 try:
@@ -76,7 +77,7 @@ def usage(err_msg=""):
 
 USAGE: %(prog)s [-v]* (-f | --filer) [--vm <vm-name>] [--description <snap-name>] --list
        %(prog)s [-v]* (-f | --filer) [--vm <vm-name>] --create [<snap-name>]
-       %(prog)s [-v]* (-f | --filer) [--vm <vm-name>] --delete (--all | <snap-name> [<snap-name]*)
+       %(prog)s [-v]* (-f | --filer) [--vm <vm-name>] --delete [--force] (--all | <snap-name> [<snap-name]*)
 
   the meaning of the options:
 
@@ -90,6 +91,7 @@ USAGE: %(prog)s [-v]* (-f | --filer) [--vm <vm-name>] [--description <snap-name>
                    if now snap-name is given the script will be asked for one
   --delete         Delete the the given snap_names or ALL snapshots if
                    the option --all is given
+  --force          Force Deletion of Snapshots (no interaction)
   --version        print programm version and exit
   --logging <lvl>  Activate Logging of the API commands to the terminal.
                    possible Levels are:
@@ -109,10 +111,11 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'qvf:?',
             ['help', 'all', 'quiet', 'filer=', 'vm=', 'vmname=',
-             'list', 'create', 'delete', 'logging=', ])
+             'force', 'list', 'create', 'delete', 'logging=', ])
     except:
         usage("SYNTAX Error")
 
+    force = False
     filer = None
     vm_name = None
     log_lvl = None
@@ -132,6 +135,8 @@ if __name__ == '__main__':
             vm_name = a
         elif o == '--all':
             ALL = True
+        elif o == '--force':
+            force = True
         elif o == '--create':
             CREATE = True
         elif o == '--delete':
@@ -162,6 +167,14 @@ if __name__ == '__main__':
     elif not CREATE and not DELETE and not LIST:
         usage("NO command given")
 
+    # check that we got a known vmname
+    vm_names = filer.get_VMnames()
+    if vm_name not in vm_names:
+        print """
+    ERROR: virtual machine \'%s\' not found on the filer
+        """ % vm_name
+        sys.exit(3)
+
     if LIST:
         snaps = filer.get_VMsnapshots(vmName = vm_name)
         if not snaps:
@@ -177,7 +190,7 @@ if __name__ == '__main__':
             usage("MISSING Argument")
         else:
             snap_names = args
-        filer.del_VMsnapshots(vm_name, snap_names)
+        filer.del_VMsnapshots(vm_name, snap_names, force=force)
     elif CREATE:
         if not len(args) > 0:
             usage("MISSING Argument")

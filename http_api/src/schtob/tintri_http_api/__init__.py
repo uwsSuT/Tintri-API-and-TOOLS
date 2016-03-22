@@ -10,7 +10,7 @@
     :license: LGPL, see LICENSE for details.
 """
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 from schtob.tintri_http_api.tintri_connection import TFilers
 

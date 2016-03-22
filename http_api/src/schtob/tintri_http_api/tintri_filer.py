@@ -15,6 +15,7 @@ import logging
 import requests
 import json
 import sys
+from time import localtime, strftime
 
 from schtob.tintri_http_api import constants
 from schtob.tintri_http_api import errors
@@ -468,23 +469,44 @@ class TFiler(object):
         }
         return self.__call_http_api_post(url, data, self.header)
 
-    def del_VMsnapshots(self, vmName, snap_name=[]):
+    def del_VMsnapshot(self, vmName, snap_info):
         """
-            delete the given "snap_list" snapshots for the VM
-
             we only delete snaps for a given VM therefore we only use
             the API like this:
             ?vmUuid=0000-VIM-0000&replicaTintriUuids=0000-SST-0000&replicaTintriUuids=0000-SST-0001
         """
-        self._log.debug("del_VMsnapshots: vmName: \'%s\' snap_name: \'%s\'" % (
-                                                        vmName, snap_name))
         url = constants.URLS['get_snapshots'] % ({'ServerName' : self._filer}) 
         vmuuid = self.get_VMuuid(vmName)
+        curl = url + "/%s" % snap_info['uuid']['uuid']
+        ret = self.__call_http_api_del(curl, headers=self.header)
+        self._log.info(ret)
+
+    def del_VMsnapshots(self, vmName, snap_name=[], force=False):
+        """
+            delete the given "snap_list" snapshots for the VM
+
+        """
+        self._log.debug("del_VMsnapshots: vmName: \'%s\' snap_name: \'%s\'" % (
+                                                        vmName, snap_name))
         snaps = self.get_VMsnapshots(vmName, snap_name)
+        if not snaps:
+            print """
+    No Snapshots found with matching Description
+            """
+            return
         for snap in snaps:
-            curl = url + "/%s" % snap['uuid']['uuid']
-            ret = self.__call_http_api_del(curl, headers=self.header)
-            self._log.info(ret)
+            if force:
+                self.del_VMsnapshot(vmName, snap)
+                continue
+
+            answ = raw_input("""Delete the following Snapshot?
+    %s %s 
+[Y | N] (N): """ % (
+                strftime("%x %X", localtime(snap['createTime']/1000)),
+                snap['description']))
+            if answ.lower().strip() == 'y':
+                self.del_VMsnapshot(vmName, snap)
+
 
     def fetch_snapshot_disks(self, snapshotUUID):
         """
